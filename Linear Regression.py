@@ -28,7 +28,8 @@ def normalequation(inputdata, outputdata):
     m, n = inputdata.shape
     inputdata = np.column_stack((np.ones(m),inputdata))
     theta = np.dot(inputdata.T, inputdata)
-    theta = np.dot(theta**-1, inputdata.T)
+    theta = np.linalg.pinv(theta)
+    theta = np.dot(theta, inputdata.T)
     theta = np.dot(theta, outputdata.T)
     return theta
 
@@ -42,6 +43,6 @@ if __name__ == "__main__":
     inputdata, outputdata = file2matrix(r'E:\test\untitled\data.txt')
     theta = normalequation(inputdata[0:800,:], outputdata[0:800])
     predictRes = predict(inputdata[800:,:],theta)
-    np.savetxt('res', predictRes, fmt='%.2f')
+    np.savetxt('res.txt', predictRes, fmt='%.2f')
 
 
