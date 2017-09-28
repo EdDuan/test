@@ -30,16 +30,19 @@ def gradientdescent(inputdata, outputdata, alpha):
     theta = np.zeros(n + 1)
     J = []
     for i in range(500):
-        partial = np.dot(inputdata.T, np.dot(inputdata, theta) - outputdata)
-        theta = theta - alpha * partial
+        hypothesis = np.dot(inputdata, theta)
+        loss = hypothesis - outputdata
+        gradient = np.dot(inputdata.T, loss) / m
+        #print(gradient)
+        #gradient = np.dot(inputdata.T, np.dot(inputdata, theta) - outputdata)
+        theta = theta - alpha * gradient
         temp = np.dot(inputdata, theta) - outputdata    #X*theta - y
-        tempJ = 1/2 * np.dot(temp.T, temp)
+        tempJ = 1/2 * np.dot(temp.T, temp)/m
         J.append(tempJ)
     plt.plot(range(500), J, 'r')
     plt.show()
 
     return theta
-
 
 
 def normalequation(inputdata, outputdata):
@@ -58,12 +61,15 @@ def predict(inputdata, theta):
     return predictRes
 
 if __name__ == "__main__":
-    inputdata, outputdata = file2matrix(r'E:\test\untitled\data.txt')
-    # theta = normalequation(inputdata[0:800,:], outputdata[0:800])
-    # predictRes = predict(inputdata[800:,:],theta)
+    inputdata, outputdata = file2matrix(r'E:\test\untitled\train.txt')
+    inputdata_test, outputdata_test = file2matrix(r'E:\test\untitled\test.txt')
+
+    # theta = normalequation(inputdata, outputdata)
+    # predictRes = predict(inputdata_test,theta)
     # np.savetxt('res.txt', predictRes, fmt='%.2f')
-    normdata = featurescaling(inputdata[0:800,:])
-    theta = gradientdescent(normdata, outputdata[0:800], 0.0006)
-    # predictRes = predict(inputdata[800:,:],theta)
-    # np.savetxt('res_gd.txt', predictRes, fmt='%.2f')
+
+    normdata = featurescaling(inputdata)
+    theta1 = gradientdescent(normdata, outputdata, 0.03)
+    predictRes = predict(inputdata_test,theta1)
+    np.savetxt('res_gd.txt', predictRes, fmt='%.2f')
 
